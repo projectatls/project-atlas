@@ -187,7 +187,7 @@ function PlatformSelector({ platforms }) {
               : <div className="text-xs" style={{color:"rgba(255,255,255,0.4)"}}>Subscription required</div>}
           </div>
         </div>
-        
+        <a
           href={p.url}
           target="_blank"
           rel="noopener noreferrer"
