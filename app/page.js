@@ -1,67 +1,69 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 
+const IMG = "https://image.tmdb.org/t/p";
+
 const MOVIES = [
   {id:1,title:"Dune: Part Two",year:2024,type:"movie",rating:8.6,runtime:"2h 46m",genres:["Sci-Fi","Adventure","Drama"],
    summary:"Paul Atreides unites with the Fremen on the desert world of Arrakis to wage war against the Harkonnens, fulfilling a prophecy that would change the galaxy forever.",
-   poster:"https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1400&h=800&fit=crop&auto=format",
+   poster:`${IMG}/w500/8b8R8l88Qje9dn9OE8PY05Nxsmd.jpg`,
+   backdrop:`${IMG}/w1280/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg`,
    trailerKey:"Way9Dexny3w",trending:true,isNew:true,rank:1,score:98,platforms:["netflix","prime","apple"],free:false},
   {id:2,title:"Oppenheimer",year:2023,type:"movie",rating:8.9,runtime:"3h 0m",genres:["Drama","History","Thriller"],
    summary:"The story of J. Robert Oppenheimer's role in the development of the atomic bomb during WWII, told through the lens of his later security hearings.",
-   poster:"https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=1400&h=800&fit=crop&auto=format",
+   poster:`${IMG}/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg`,
+   backdrop:`${IMG}/w1280/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg`,
    trailerKey:"uYPbbksJxIg",trending:true,isNew:false,rank:2,score:96,platforms:["prime","peacock"],free:false},
   {id:3,title:"The Bear",year:2024,type:"tv",rating:8.7,runtime:"30m · S2",genres:["Drama","Comedy"],
    summary:"A young chef from the fine dining world comes home to run his family's sandwich shop in Chicago, confronting old wounds and igniting a culinary transformation.",
-   poster:"https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1400&h=800&fit=crop&auto=format",
+   poster:`${IMG}/w500/y0YlVgUaplwjzZmEr2RvPmwxJM7.jpg`,
+   backdrop:`${IMG}/w1280/y04nrUygDOJ08PRGYFKBdVKB7Pf.jpg`,
    trailerKey:"",trending:true,isNew:false,rank:3,score:95,platforms:["hulu","disney"],free:false},
   {id:4,title:"Poor Things",year:2023,type:"movie",rating:8.2,runtime:"2h 21m",genres:["Fantasy","Comedy","Drama"],
    summary:"The incredible tale of Bella Baxter, a young woman brought back to life by an eccentric scientist who flees to explore the world unburdened by the prejudices of her time.",
-   poster:"https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&h=800&fit=crop&auto=format",
+   poster:`${IMG}/w500/kCGlIMHnOm8JPXq3rXM6c5wMxcT.jpg`,
+   backdrop:`${IMG}/w1280/feSiISwgEpVzR0fgV8aV80yWFXA.jpg`,
    trailerKey:"RlbR5N6veqw",trending:false,isNew:false,rank:4,score:91,platforms:["hulu","prime"],free:false},
   {id:5,title:"Shogun",year:2024,type:"tv",rating:9.0,runtime:"60m · S1",genres:["Drama","History","Action"],
    summary:"In 1600s feudal Japan, a shipwrecked English sailor aligns with a powerful warlord as they navigate the treacherous political landscape of the civil war era.",
-   poster:"https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1400&h=800&fit=crop&auto=format",
+   poster:`${IMG}/w500/7O4iVfOMQGqg2BX0u9wmownB6q9.jpg`,
+   backdrop:`${IMG}/w1280/3Wf0qWkpYpUKBKLZQTfJKfHbcc6.jpg`,
    trailerKey:"",trending:true,isNew:false,rank:5,score:99,platforms:["hulu","disney"],free:false},
   {id:6,title:"Civil War",year:2024,type:"movie",rating:7.5,runtime:"1h 49m",genres:["Action","Thriller","Drama"],
    summary:"A team of journalists race across a near-future America tearing itself apart in a second civil war, risking everything to document the conflict.",
-   poster:"https://images.unsplash.com/photo-1579353977828-2a4eab540b9a?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1400&h=800&fit=crop&auto=format",
+   poster:`${IMG}/w500/sh7Rg8Er1AVdRRINPjvKWZsAFwq.jpg`,
+   backdrop:`${IMG}/w1280/3R4MnZ3OrlYHEW8oCmR5LV2WiFD.jpg`,
    trailerKey:"",trending:true,isNew:true,rank:6,score:87,platforms:["prime"],free:false},
   {id:7,title:"Inside Out 2",year:2024,type:"movie",rating:7.8,runtime:"1h 40m",genres:["Animation","Family","Comedy"],
    summary:"Riley enters adolescence and her mind gets an unexpected remodel, with new emotions joining the original five.",
-   poster:"https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1400&h=800&fit=crop&auto=format",
+   poster:`${IMG}/w500/vpnVM9B6NMmQpWeZvzLvDESb2QY.jpg`,
+   backdrop:`${IMG}/w1280/3WardJyAvYsR5xWMtbz4U3uxL3z.jpg`,
    trailerKey:"",trending:false,isNew:true,rank:7,score:85,platforms:["disney"],free:false},
-  {id:8,title:"Freevee Collection",year:2024,type:"movie",rating:7.2,runtime:"Varies",genres:["Various"],
-   summary:"Critically acclaimed films and documentaries available at no cost with ads — no subscription required.",
-   poster:"https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1400&h=800&fit=crop&auto=format",
-   trailerKey:"",trending:false,isNew:false,rank:8,score:72,platforms:["freevee"],free:true},
-  {id:9,title:"Tubi Originals",year:2024,type:"tv",rating:6.8,runtime:"Varies",genres:["Various"],
-   summary:"Hundreds of original and classic shows streaming completely free — no credit card, no subscription needed.",
-   poster:"https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?w=1400&h=800&fit=crop&auto=format",
-   trailerKey:"",trending:false,isNew:false,rank:9,score:68,platforms:["tubi"],free:true},
-  {id:10,title:"Furiosa",year:2024,type:"movie",rating:7.8,runtime:"2h 28m",genres:["Action","Sci-Fi"],
+  {id:8,title:"Furiosa: A Mad Max Saga",year:2024,type:"movie",rating:7.8,runtime:"2h 28m",genres:["Action","Sci-Fi"],
    summary:"The origin story of the legendary warrior Furiosa before she crosses paths with the Mad Max gang and begins her long road back home.",
-   poster:"https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1504700610630-ac6aba3536d3?w=1400&h=800&fit=crop&auto=format",
-   trailerKey:"",trending:true,isNew:true,rank:10,score:82,platforms:["prime","hbo"],free:false},
-  {id:11,title:"House of the Dragon S2",year:2024,type:"tv",rating:8.4,runtime:"60m · S2",genres:["Fantasy","Drama","Action"],
+   poster:`${IMG}/w500/iADOJ8Zymht2JPMoy3R7xceiES7.jpg`,
+   backdrop:`${IMG}/w1280/wOzKbeBdmWY7ZjvLrnW7d6bH9rO.jpg`,
+   trailerKey:"",trending:true,isNew:true,rank:8,score:82,platforms:["prime","hbo"],free:false},
+  {id:9,title:"House of the Dragon",year:2024,type:"tv",rating:8.4,runtime:"60m · S2",genres:["Fantasy","Drama","Action"],
    summary:"The Targaryen civil war enters its bloodiest phase as both sides marshal their forces and the fate of the Seven Kingdoms hangs in the balance.",
-   poster:"https://images.unsplash.com/photo-1500462918059-b1a0cb512f1d?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1400&h=800&fit=crop&auto=format",
-   trailerKey:"",trending:true,isNew:true,rank:11,score:90,platforms:["hbo"],free:false},
-  {id:12,title:"Pluto",year:2024,type:"tv",rating:8.5,runtime:"60m · S1",genres:["Animation","Sci-Fi","Mystery"],
+   poster:`${IMG}/w500/z2yahl2uefxDCl0nogcRBstwruJ.jpg`,
+   backdrop:`${IMG}/w1280/etj8E2o0Bud0HkONVQPjyCkIvpv.jpg`,
+   trailerKey:"",trending:true,isNew:true,rank:9,score:90,platforms:["hbo"],free:false},
+  {id:10,title:"Pluto",year:2023,type:"tv",rating:8.5,runtime:"60m · S1",genres:["Animation","Sci-Fi","Mystery"],
    summary:"Based on Naoki Urasawa's manga, a robot investigator hunts the entity destroying the world's most powerful robots.",
-   poster:"https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=400&h=600&fit=crop&auto=format",
-   backdrop:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1400&h=800&fit=crop&auto=format",
-   trailerKey:"",trending:false,isNew:true,rank:12,score:88,platforms:["netflix"],free:false},
+   poster:`${IMG}/w500/9SXjbnfjA9CKKlGta2OB3Mzh1Mb.jpg`,
+   backdrop:`${IMG}/w1280/iyJlcWb50LdiUiknyXudPHtX5Ay.jpg`,
+   trailerKey:"",trending:false,isNew:true,rank:10,score:88,platforms:["netflix"],free:false},
+  {id:11,title:"Free Solo",year:2018,type:"movie",rating:7.7,runtime:"1h 40m",genres:["Documentary","Adventure"],
+   summary:"Alex Honnold attempts to become the first person to free solo climb El Capitan's 3,000-foot wall without a rope, in a film that captures one of the greatest athletic feats in history.",
+   poster:`${IMG}/w500/y8oQfMSWNQ8qBhJ1MURtxbiWznT.jpg`,
+   backdrop:`${IMG}/w1280/wjOH8VtfFnZAQy2u9V8jQVQQ8wF.jpg`,
+   trailerKey:"",trending:false,isNew:false,rank:11,score:72,platforms:["tubi"],free:true},
+  {id:12,title:"The Grand Budapest Hotel",year:2014,type:"movie",rating:8.1,runtime:"1h 39m",genres:["Comedy","Drama"],
+   summary:"The adventures of a legendary concierge at a famous European hotel between the wars, and the lobby boy who becomes his trusted friend, told through a story within a story.",
+   poster:`${IMG}/w500/eWdyYQreja6JGCzqHWXpWHDrrPo.jpg`,
+   backdrop:`${IMG}/w1280/nXJ41fst1KOlAlu6JuY1OL0Qe2g.jpg`,
+   trailerKey:"",trending:false,isNew:false,rank:12,score:68,platforms:["freevee"],free:true},
 ];
 
 const PLATFORMS = {
@@ -69,10 +71,10 @@ const PLATFORMS = {
   prime:   {name:"Prime Video",short:"Prime",  color:"#00A8E1", bg:"#001520", label:"P",  url:"https://primevideo.com"},
   disney:  {name:"Disney+",   short:"Disney+", color:"#1a78ff", bg:"#00001a", label:"D+", url:"https://disneyplus.com"},
   hulu:    {name:"Hulu",      short:"Hulu",    color:"#1CE783", bg:"#001a0a", label:"H",  url:"https://hulu.com"},
-  apple:   {name:"Apple TV+", short:"Apple TV",color:"#ffffff", bg:"#111111", label:"▶",  url:"https://tv.apple.com"},
+  apple:   {name:"Apple TV+", short:"Apple TV",color:"#ffffff", bg:"#111111", label:"tv", url:"https://tv.apple.com"},
   hbo:     {name:"Max",       short:"Max",     color:"#5822FF", bg:"#0d0023", label:"M",  url:"https://max.com"},
   peacock: {name:"Peacock",   short:"Peacock", color:"#FF6B35", bg:"#1a0800", label:"P",  url:"https://peacocktv.com"},
-  freevee: {name:"Freevee",   short:"Freevee", color:"#1CE783", bg:"#001a0a", label:"F",  url:"https://amazon.com/freevee", isFree:true},
+  freevee: {name:"Amazon Freevee",short:"Freevee",color:"#1CE783",bg:"#001a0a",label:"F", url:"https://amazon.com/freevee", isFree:true},
   tubi:    {name:"Tubi",      short:"Tubi",    color:"#FA004F", bg:"#1a0010", label:"T",  url:"https://tubitv.com",         isFree:true},
 };
 
@@ -110,28 +112,28 @@ function MovieCard({ movie, onClick }) {
       onClick={() => onClick(movie)}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{flexShrink:0,width:"140px",cursor:"pointer",userSelect:"none"}}
+      style={{flexShrink:0,width:"170px",cursor:"pointer",userSelect:"none"}}
     >
-      <div style={{position:"relative",width:"140px",height:"210px",borderRadius:"8px",overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)",transition:"border-color 0.2s",borderColor:hovered?"rgba(255,255,255,0.18)":"rgba(255,255,255,0.07)"}}>
-        <img src={movie.poster} alt={movie.title} style={{width:"100%",height:"100%",objectFit:"cover",transition:"transform 0.4s ease",transform:hovered?"scale(1.06)":"scale(1)"}} loading="lazy" />
+      <div style={{position:"relative",width:"170px",height:"255px",borderRadius:"10px",overflow:"hidden",border:"1px solid rgba(255,255,255,0.07)",transition:"border-color 0.2s, transform 0.25s",borderColor:hovered?"rgba(255,255,255,0.2)":"rgba(255,255,255,0.07)",transform:hovered?"translateY(-4px)":"translateY(0)",boxShadow:hovered?"0 16px 32px rgba(0,0,0,0.5)":"0 4px 12px rgba(0,0,0,0.25)"}}>
+        <img src={movie.poster} alt={movie.title} style={{width:"100%",height:"100%",objectFit:"cover",transition:"transform 0.4s ease",transform:hovered?"scale(1.05)":"scale(1)"}} loading="lazy" />
         {/* bottom fade */}
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, transparent 70%)"}} />
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.35) 45%, transparent 70%)"}} />
         {/* hover play */}
         {hovered && (
-          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <div style={{width:"40px",height:"40px",borderRadius:"50%",background:"rgba(255,255,255,0.15)",border:"1.5px solid rgba(255,255,255,0.35)",display:"flex",alignItems:"center",justifyContent:"center",backdropFilter:"blur(4px)"}}>
-              <span style={{color:"#fff",fontSize:"12px",marginLeft:"2px"}}>▶</span>
+          <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(0,0,0,0.15)"}}>
+            <div style={{width:"46px",height:"46px",borderRadius:"50%",background:"rgba(34,197,94,0.9)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 20px rgba(34,197,94,0.5)"}}>
+              <span style={{color:"#fff",fontSize:"14px",marginLeft:"2px"}}>▶</span>
             </div>
           </div>
         )}
         {/* rating badge */}
-        <div style={{position:"absolute",top:"8px",left:"8px",background:"rgba(0,0,0,0.65)",backdropFilter:"blur(6px)",borderRadius:"4px",padding:"2px 6px",fontSize:"10px",fontWeight:600,color:movie.free?"#1CE783":"rgba(255,255,255,0.85)"}}>
+        <div style={{position:"absolute",top:"8px",left:"8px",background:"rgba(0,0,0,0.65)",backdropFilter:"blur(6px)",borderRadius:"5px",padding:"3px 7px",fontSize:"11px",fontWeight:600,color:movie.free?"#1CE783":"rgba(255,255,255,0.9)"}}>
           {movie.free ? "FREE" : `⭐ ${movie.rating}`}
         </div>
         {/* bottom info */}
-        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"8px"}}>
-          <div style={{fontSize:"12px",fontWeight:600,color:"#fff",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis"}}>{movie.title}</div>
-          <div style={{fontSize:"10px",color:"rgba(255,255,255,0.4)",marginTop:"2px"}}>{movie.year} · {movie.type==="tv"?"TV":"Film"}</div>
+        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"10px"}}>
+          <div style={{fontSize:"13px",fontWeight:700,color:"#fff",overflow:"hidden",whiteSpace:"nowrap",textOverflow:"ellipsis",marginBottom:"2px"}}>{movie.title}</div>
+          <div style={{fontSize:"11px",color:"rgba(255,255,255,0.45)"}}>{movie.year} · {movie.type==="tv"?"TV":"Film"}</div>
         </div>
       </div>
     </div>
@@ -234,84 +236,90 @@ function DetailPage({ movie, onBack, onSelect }) {
         <TrailerModal trailerKey={movie.trailerKey} title={movie.title} onClose={() => setTrailerOpen(false)} />
       )}
 
-      {/* BACKDROP */}
-      <div style={{position:"relative",height:"460px",overflow:"hidden"}}>
+      {/* BACKDROP with integrated play button */}
+      <div style={{position:"relative",height:"560px",overflow:"hidden"}}>
         <img
           src={movie.backdrop || movie.poster}
           alt=""
-          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",filter:"blur(3px) brightness(0.3)",transform:"scale(1.05)"}}
+          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}
         />
-        {/* clean gradient fades */}
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(13,13,15,0.2) 0%, transparent 30%, rgba(13,13,15,0.8) 75%, rgba(13,13,15,1) 100%)"}} />
-        <div style={{position:"absolute",inset:0,background:"linear-gradient(to right, rgba(13,13,15,0.9) 0%, rgba(13,13,15,0.5) 40%, transparent 65%)"}} />
+        {/* cinematic gradient fades */}
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(13,13,15,0.1) 0%, rgba(13,13,15,0.05) 25%, rgba(13,13,15,0.55) 65%, rgba(13,13,15,1) 100%)"}} />
+        <div style={{position:"absolute",inset:0,background:"linear-gradient(to right, rgba(13,13,15,0.85) 0%, rgba(13,13,15,0.35) 45%, transparent 75%)"}} />
 
         {/* back */}
-        <div style={{position:"absolute",top:"84px",left:"32px"}}>
+        <div style={{position:"absolute",top:"84px",left:"32px",zIndex:5}}>
           <button
             onClick={onBack}
-            style={{display:"flex",alignItems:"center",gap:"6px",padding:"6px 14px",borderRadius:"6px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.6)",cursor:"pointer",fontSize:"13px",fontWeight:500,transition:"all 0.15s"}}
-            onMouseEnter={(e)=>{e.currentTarget.style.background="rgba(255,255,255,0.1)";e.currentTarget.style.color="#fff";}}
-            onMouseLeave={(e)=>{e.currentTarget.style.background="rgba(255,255,255,0.06)";e.currentTarget.style.color="rgba(255,255,255,0.6)";}}
+            style={{display:"flex",alignItems:"center",gap:"6px",padding:"6px 14px",borderRadius:"6px",background:"rgba(0,0,0,0.4)",border:"1px solid rgba(255,255,255,0.15)",color:"rgba(255,255,255,0.7)",cursor:"pointer",fontSize:"13px",fontWeight:500,transition:"all 0.15s",backdropFilter:"blur(8px)"}}
+            onMouseEnter={(e)=>{e.currentTarget.style.background="rgba(0,0,0,0.6)";e.currentTarget.style.color="#fff";}}
+            onMouseLeave={(e)=>{e.currentTarget.style.background="rgba(0,0,0,0.4)";e.currentTarget.style.color="rgba(255,255,255,0.7)";}}
           >
             ← Back
           </button>
         </div>
 
+        {/* PLAY BUTTON — centered on the backdrop image itself, gradiented into it */}
+        <button
+          onClick={() => movie.trailerKey && setTrailerOpen(true)}
+          disabled={!movie.trailerKey}
+          style={{
+            position:"absolute",top:"42%",left:"50%",
+            transform:"translate(-50%,-50%)",
+            width:"84px",height:"84px",borderRadius:"50%",
+            background: movie.trailerKey
+              ? "radial-gradient(circle at 35% 30%, #4ade80, #16a34a 70%)"
+              : "rgba(255,255,255,0.08)",
+            border: movie.trailerKey ? "3px solid rgba(255,255,255,0.85)" : "2px solid rgba(255,255,255,0.15)",
+            display:"flex",alignItems:"center",justifyContent:"center",
+            cursor: movie.trailerKey ? "pointer" : "not-allowed",
+            boxShadow: movie.trailerKey ? "0 0 0 12px rgba(255,255,255,0.05), 0 12px 40px rgba(34,197,94,0.5)" : "none",
+            transition:"transform 0.2s, box-shadow 0.2s",
+            zIndex:4,
+          }}
+          onMouseEnter={(e)=>{ if(movie.trailerKey){ e.currentTarget.style.transform="translate(-50%,-50%) scale(1.08)"; e.currentTarget.style.boxShadow="0 0 0 14px rgba(255,255,255,0.08), 0 16px 50px rgba(34,197,94,0.65)"; }}}
+          onMouseLeave={(e)=>{ if(movie.trailerKey){ e.currentTarget.style.transform="translate(-50%,-50%) scale(1)"; e.currentTarget.style.boxShadow="0 0 0 12px rgba(255,255,255,0.05), 0 12px 40px rgba(34,197,94,0.5)"; }}}
+        >
+          <span style={{color:"#fff",fontSize:"26px",marginLeft:"4px",filter:"drop-shadow(0 2px 6px rgba(0,0,0,0.4))"}}>▶</span>
+        </button>
+        {!movie.trailerKey && (
+          <div style={{position:"absolute",top:"calc(42% + 56px)",left:"50%",transform:"translateX(-50%)",fontSize:"11px",color:"rgba(255,255,255,0.35)",zIndex:4,whiteSpace:"nowrap"}}>
+            No trailer available
+          </div>
+        )}
+
         {/* title block bottom-left */}
-        <div style={{position:"absolute",bottom:"32px",left:"32px",right:"40%",maxWidth:"700px"}}>
+        <div style={{position:"absolute",bottom:"32px",left:"32px",right:"40%",maxWidth:"700px",zIndex:5}}>
           <div style={{display:"flex",gap:"8px",flexWrap:"wrap",marginBottom:"10px"}}>
             {movie.genres.map((g) => (
-              <span key={g} style={{padding:"2px 10px",borderRadius:"4px",fontSize:"11px",fontWeight:600,background:"rgba(255,255,255,0.08)",color:"rgba(255,255,255,0.55)",border:"1px solid rgba(255,255,255,0.1)"}}>{g}</span>
+              <span key={g} style={{padding:"2px 10px",borderRadius:"4px",fontSize:"11px",fontWeight:600,background:"rgba(255,255,255,0.1)",color:"rgba(255,255,255,0.7)",border:"1px solid rgba(255,255,255,0.12)",backdropFilter:"blur(8px)"}}>{g}</span>
             ))}
           </div>
-          <h1 style={{fontSize:"clamp(2rem,4vw,3.2rem)",fontWeight:900,color:"#fff",letterSpacing:"-0.02em",lineHeight:1.1,marginBottom:"10px",textTransform:"uppercase"}}>
-            {movie.title} <span style={{fontSize:"0.45em",fontWeight:400,color:"rgba(255,255,255,0.4)",textTransform:"none"}}>({movie.year})</span>
+          <h1 style={{fontSize:"clamp(2rem,4vw,3.2rem)",fontWeight:900,color:"#fff",letterSpacing:"-0.02em",lineHeight:1.1,marginBottom:"10px",textTransform:"uppercase",textShadow:"0 4px 24px rgba(0,0,0,0.6)"}}>
+            {movie.title} <span style={{fontSize:"0.45em",fontWeight:400,color:"rgba(255,255,255,0.5)",textTransform:"none"}}>({movie.year})</span>
           </h1>
-          <div style={{display:"flex",alignItems:"center",gap:"12px",fontSize:"13px",color:"rgba(255,255,255,0.5)",flexWrap:"wrap"}}>
+          <div style={{display:"flex",alignItems:"center",gap:"12px",fontSize:"13px",color:"rgba(255,255,255,0.6)",flexWrap:"wrap"}}>
             <span style={{color:"#f5c518",fontWeight:600}}>⭐ {movie.rating}</span>
             <span>·</span>
             <span>{movie.runtime}</span>
             <span>·</span>
-            <span style={{background:"rgba(255,255,255,0.08)",padding:"1px 8px",borderRadius:"3px",border:"1px solid rgba(255,255,255,0.12)",fontSize:"11px"}}>{movie.type==="tv"?"TV Show":"Movie"}</span>
+            <span style={{background:"rgba(255,255,255,0.1)",padding:"1px 8px",borderRadius:"3px",border:"1px solid rgba(255,255,255,0.15)",fontSize:"11px",backdropFilter:"blur(8px)"}}>{movie.type==="tv"?"TV Show":"Movie"}</span>
           </div>
         </div>
 
         {/* poster right side */}
-        <div style={{position:"absolute",bottom:"-30px",right:"48px",display:"flex",gap:"0"}}>
+        <div style={{position:"absolute",bottom:"-30px",right:"48px",zIndex:5}}>
           <img
             src={movie.poster}
             alt={movie.title}
-            style={{width:"140px",height:"210px",borderRadius:"8px",objectFit:"cover",border:"1px solid rgba(255,255,255,0.12)",boxShadow:"0 16px 48px rgba(0,0,0,0.7)"}}
+            style={{width:"150px",height:"225px",borderRadius:"10px",objectFit:"cover",border:"1px solid rgba(255,255,255,0.15)",boxShadow:"0 20px 56px rgba(0,0,0,0.8)"}}
           />
         </div>
       </div>
 
       {/* CONTENT */}
-      <div style={{maxWidth:"1100px",margin:"0 auto",padding:"48px 32px 64px",display:"grid",gridTemplateColumns:"1fr 240px",gap:"48px",alignItems:"start"}}>
+      <div style={{maxWidth:"1100px",margin:"0 auto",padding:"56px 32px 64px",display:"grid",gridTemplateColumns:"1fr 240px",gap:"48px",alignItems:"start"}}>
         <div>
-          {/* PLAY TRAILER */}
-          <div style={{marginBottom:"28px"}}>
-            <button
-              onClick={() => movie.trailerKey && setTrailerOpen(true)}
-              disabled={!movie.trailerKey}
-              style={{
-                display:"inline-flex",alignItems:"center",gap:"12px",
-                padding:"12px 28px",borderRadius:"8px",
-                background:movie.trailerKey?"#22c55e":"rgba(255,255,255,0.05)",
-                border:movie.trailerKey?"none":"1px solid rgba(255,255,255,0.1)",
-                color:movie.trailerKey?"#fff":"rgba(255,255,255,0.2)",
-                fontWeight:700,fontSize:"15px",cursor:movie.trailerKey?"pointer":"not-allowed",
-                boxShadow:movie.trailerKey?"0 4px 24px rgba(34,197,94,0.3)":"none",
-                transition:"all 0.2s",
-              }}
-              onMouseEnter={(e)=>{ if(movie.trailerKey){ e.currentTarget.style.background="#16a34a"; e.currentTarget.style.boxShadow="0 6px 32px rgba(34,197,94,0.45)"; e.currentTarget.style.transform="translateY(-1px)"; }}}
-              onMouseLeave={(e)=>{ if(movie.trailerKey){ e.currentTarget.style.background="#22c55e"; e.currentTarget.style.boxShadow="0 4px 24px rgba(34,197,94,0.3)"; e.currentTarget.style.transform="translateY(0)"; }}}
-            >
-              <div style={{width:"32px",height:"32px",borderRadius:"50%",background:"rgba(255,255,255,0.2)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"12px"}}>▶</div>
-              {movie.trailerKey ? "Play Trailer" : "No Trailer Available"}
-            </button>
-          </div>
-
           {/* TABS */}
           <div style={{display:"flex",gap:"0",borderBottom:"1px solid rgba(255,255,255,0.08)",marginBottom:"24px"}}>
             {tabs.map((t) => (
@@ -453,7 +461,6 @@ function HomePage({ onSelectMovie }) {
 
   const showHome = !searchResults && activeFilter==="all";
 
-  // hero backdrop: lay 8 movie posters in a blurred grid
   const heroMovies = MOVIES.slice(0, 8);
 
   return (
@@ -462,22 +469,18 @@ function HomePage({ onSelectMovie }) {
       {/* ── HERO ── */}
       <div style={{position:"relative",minHeight:"580px",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",paddingTop:"64px"}}>
 
-        {/* blurred poster grid backdrop */}
         <div style={{position:"absolute",inset:0,overflow:"hidden"}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",height:"100%",gap:"2px"}}>
             {heroMovies.map((m) => (
               <div key={m.id} style={{overflow:"hidden",position:"relative"}}>
-                <img src={m.poster} alt="" style={{width:"100%",height:"100%",objectFit:"cover",filter:"blur(8px) brightness(0.25)",transform:"scale(1.1)"}} />
+                <img src={m.backdrop || m.poster} alt="" style={{width:"100%",height:"100%",objectFit:"cover",filter:"blur(6px) brightness(0.3)",transform:"scale(1.1)"}} />
               </div>
             ))}
           </div>
-          {/* clean dark overlay — no colored gradients */}
           <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(13,13,15,0.55) 0%, rgba(13,13,15,0.25) 30%, rgba(13,13,15,0.7) 75%, rgba(13,13,15,1) 100%)"}} />
-          {/* very subtle center vignette only */}
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse 80% 60% at 50% 50%, transparent 40%, rgba(13,13,15,0.5) 100%)"}} />
         </div>
 
-        {/* hero text */}
         <div style={{position:"relative",zIndex:10,textAlign:"center",padding:"0 24px",width:"100%",maxWidth:"720px"}}>
           <h1 style={{fontSize:"clamp(2rem,5vw,3.4rem)",fontWeight:800,color:"#fff",letterSpacing:"-0.02em",lineHeight:1.2,marginBottom:"14px"}}>
             Your streaming guide for<br />movies, TV shows &amp; sports
@@ -486,7 +489,6 @@ function HomePage({ onSelectMovie }) {
             Find where to stream new, popular &amp; upcoming entertainment.
           </p>
 
-          {/* SEARCH */}
           <div ref={searchRef} style={{position:"relative",maxWidth:"560px",margin:"0 auto 20px"}}>
             <span style={{position:"absolute",left:"16px",top:"50%",transform:"translateY(-50%)",color:"rgba(255,255,255,0.25)",pointerEvents:"none",fontSize:"14px"}}>🔍</span>
             <input
@@ -508,7 +510,6 @@ function HomePage({ onSelectMovie }) {
             />
             <span style={{position:"absolute",right:"14px",top:"50%",transform:"translateY(-50%)",fontSize:"10px",color:"rgba(255,255,255,0.2)",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"4px",padding:"2px 6px"}}>⌘K</span>
 
-            {/* autocomplete */}
             {acResults.length > 0 && (
               <div style={{position:"absolute",top:"calc(100% + 6px)",left:0,right:0,background:"#161620",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",overflow:"hidden",zIndex:50,boxShadow:"0 16px 40px rgba(0,0,0,0.6)"}}>
                 {acResults.map((m, i) => (
@@ -530,7 +531,6 @@ function HomePage({ onSelectMovie }) {
             )}
           </div>
 
-          {/* filter pills */}
           <div style={{display:"flex",gap:"6px",justifyContent:"center",flexWrap:"wrap"}}>
             {FILTERS.map((f) => (
               <button
@@ -550,7 +550,6 @@ function HomePage({ onSelectMovie }) {
           </div>
         </div>
 
-        {/* streaming service icons row — like JustWatch */}
         <div style={{position:"relative",zIndex:10,marginTop:"36px",textAlign:"center"}}>
           <div style={{fontSize:"11px",color:"rgba(255,255,255,0.2)",marginBottom:"10px",letterSpacing:"0.05em"}}>Streaming services on CineScope</div>
           <div style={{display:"flex",gap:"8px",justifyContent:"center",flexWrap:"wrap",padding:"0 24px"}}>
@@ -569,7 +568,6 @@ function HomePage({ onSelectMovie }) {
         </div>
       </div>
 
-      {/* ── SEARCH / FILTER RESULTS ── */}
       {searchResults && (
         <div style={{maxWidth:"1200px",margin:"0 auto",padding:"32px 32px"}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"20px"}}>
@@ -580,17 +578,15 @@ function HomePage({ onSelectMovie }) {
             </div>
             <button onClick={()=>{setSearchResults(null);setActiveFilter("all");setQuery("");}} style={{fontSize:"12px",color:"rgba(255,255,255,0.35)",background:"none",border:"none",cursor:"pointer"}}>Clear</button>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:"20px"}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:"20px"}}>
             {searchResults.map((m) => <MovieCard key={m.id} movie={m} onClick={onSelectMovie} />)}
             {searchResults.length===0 && <div style={{gridColumn:"1/-1",textAlign:"center",padding:"48px",fontSize:"13px",color:"rgba(255,255,255,0.2)"}}>No results found.</div>}
           </div>
         </div>
       )}
 
-      {/* ── HOME SECTIONS ── */}
       {showHome && (
         <>
-          {/* TRENDING */}
           <Section title="Trending Now">
             <HorizontalRow movies={trending} onSelect={onSelectMovie} />
           </Section>
@@ -598,7 +594,6 @@ function HomePage({ onSelectMovie }) {
           <Divider />
 
           <div style={{maxWidth:"1200px",margin:"0 auto",padding:"32px 32px",display:"grid",gridTemplateColumns:"1fr 1fr",gap:"48px"}}>
-            {/* LEADERBOARD */}
             <div>
               <SectionTitle>Popular This Week</SectionTitle>
               <div style={{display:"flex",flexDirection:"column",gap:"6px",marginTop:"16px"}}>
@@ -611,7 +606,7 @@ function HomePage({ onSelectMovie }) {
                     onMouseLeave={(e)=>{ e.currentTarget.style.background="rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.05)"; e.currentTarget.style.transform="translateX(0)"; }}
                   >
                     <span style={{fontSize:"16px",fontWeight:800,minWidth:"24px",textAlign:"center",color:i<3?"#f5c518":"rgba(255,255,255,0.18)"}}>{i+1}</span>
-                    <div style={{position:"relative",width:"42px",height:"60px",borderRadius:"6px",overflow:"hidden",flexShrink:0}}>
+                    <div style={{position:"relative",width:"46px",height:"66px",borderRadius:"6px",overflow:"hidden",flexShrink:0}}>
                       <img src={m.poster} alt={m.title} style={{width:"100%",height:"100%",objectFit:"cover"}} loading="lazy" />
                       <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 60%)"}} />
                     </div>
@@ -628,7 +623,6 @@ function HomePage({ onSelectMovie }) {
               </div>
             </div>
 
-            {/* FREE TO WATCH */}
             <div>
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                 <SectionTitle>Free to Watch</SectionTitle>
@@ -645,7 +639,7 @@ function HomePage({ onSelectMovie }) {
                       onMouseEnter={(e)=>{ e.currentTarget.style.background="rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor="rgba(28,231,131,0.15)"; e.currentTarget.style.transform="translateX(3px)"; }}
                       onMouseLeave={(e)=>{ e.currentTarget.style.background="rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor="rgba(255,255,255,0.05)"; e.currentTarget.style.transform="translateX(0)"; }}
                     >
-                      <div style={{position:"relative",width:"42px",height:"60px",borderRadius:"6px",overflow:"hidden",flexShrink:0}}>
+                      <div style={{position:"relative",width:"46px",height:"66px",borderRadius:"6px",overflow:"hidden",flexShrink:0}}>
                         <img src={m.poster} alt={m.title} style={{width:"100%",height:"100%",objectFit:"cover"}} loading="lazy" />
                         <div style={{position:"absolute",inset:0,background:"linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 60%)"}} />
                       </div>
@@ -664,7 +658,6 @@ function HomePage({ onSelectMovie }) {
 
           <Divider />
 
-          {/* NEW RELEASES */}
           <Section title="New Releases">
             <HorizontalRow movies={isNew} onSelect={onSelectMovie} />
           </Section>
@@ -696,7 +689,7 @@ function Divider() {
 }
 function HorizontalRow({ movies, onSelect }) {
   return (
-    <div style={{display:"flex",gap:"14px",overflowX:"auto",paddingBottom:"8px",scrollbarWidth:"none"}}>
+    <div style={{display:"flex",gap:"16px",overflowX:"auto",paddingBottom:"8px",scrollbarWidth:"none"}}>
       {movies.map((m) => <MovieCard key={m.id} movie={m} onClick={onSelect} />)}
     </div>
   );
@@ -714,7 +707,6 @@ export default function CineScope() {
   return (
     <div style={{background:"#0d0d0f",minHeight:"100vh",fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"}}>
 
-      {/* NAV */}
       <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:100,height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 32px",background:"rgba(13,13,15,0.9)",borderBottom:"1px solid rgba(255,255,255,0.07)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)"}}>
         <button
           onClick={() => { setSelectedMovie(null); window.scrollTo({top:0}); }}
