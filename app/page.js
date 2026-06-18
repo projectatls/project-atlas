@@ -241,8 +241,9 @@ function Carousel({ children, rowRef }) {
             height: "84px",
             borderRadius: "50%",
             background: trailerKey 
-              ? "rgba(255, 255, 255, 0.15)" 
+              ? "linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05))" 
               : "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
             border: "1px solid rgba(255, 255, 255, 0.2)",
