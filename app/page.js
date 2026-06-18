@@ -230,32 +230,51 @@ function Carousel({ children, rowRef }) {
 
       {canLeft && (
         <button
-          onClick={function(){ scrollBy(-1); }}
+          onClick={function(){ if(trailerKey) setTrailerOpen(true); }}
+          disabled={!trailerKey}
           style={{
-            position:"absolute",left:"-8px",top:"0",bottom:"8px",width:"56px",
-            display:"flex",alignItems:"center",justifyContent:"center",
-            background:"linear-gradient(to right, #0d0d0f 20%, transparent)",
-            border:"none",cursor:"pointer",zIndex:5,
-            opacity:hovered?1:0,
-            transition:"opacity 0.25s " + EASE,
+            position: "absolute",
+            top: "42%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+            width: "84px",
+            height: "84px",
+            borderRadius: "50%",
+            background: trailerKey 
+              ? "rgba(255, 255, 255, 0.15)" 
+              : "rgba(255, 255, 255, 0.05)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: trailerKey ? "pointer" : "not-allowed",
+            boxShadow: trailerKey 
+              ? "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.1)" 
+              : "none",
+            transition: "all 0.3s " + EASE,
+            zIndex: 4,
+          }}
+          onMouseEnter={function(e){ 
+            if(trailerKey){ 
+              e.currentTarget.style.transform = "translate(-50%,-50%) scale(1.05)";
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.25)";
+            } 
+          }}
+          onMouseLeave={function(e){ 
+            if(trailerKey){ 
+              e.currentTarget.style.transform = "translate(-50%,-50%) scale(1)";
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.15)";
+            } 
           }}
         >
-          <div style={{width:"36px",height:"36px",borderRadius:"50%",background:"rgba(20,20,26,0.9)",border:"1px solid rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:"16px",backdropFilter:"blur(8px)"}}>‹</div>
-        </button>
-      )}
-      {canRight && (
-        <button
-          onClick={function(){ scrollBy(1); }}
-          style={{
-            position:"absolute",right:"-8px",top:"0",bottom:"8px",width:"56px",
-            display:"flex",alignItems:"center",justifyContent:"center",
-            background:"linear-gradient(to left, #0d0d0f 20%, transparent)",
-            border:"none",cursor:"pointer",zIndex:5,
-            opacity:hovered?1:0,
-            transition:"opacity 0.25s " + EASE,
-          }}
-        >
-          <div style={{width:"36px",height:"36px",borderRadius:"50%",background:"rgba(20,20,26,0.9)",border:"1px solid rgba(255,255,255,0.15)",display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontSize:"16px",backdropFilter:"blur(8px)"}}>›</div>
+          <span style={{
+            color: "#fff",
+            fontSize: "28px",
+            marginLeft: "4px",
+            filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))"
+          }}>▶</span>
         </button>
       )}
     </div>
