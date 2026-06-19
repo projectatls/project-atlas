@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const IMG = "https://image.tmdb.org/t/p";
-const SITE_NAME = "movi";
+const SITE_NAME = "Mofi;
 const EASE = "cubic-bezier(0.22, 1, 0.36, 1)";
 
 const PLATFORMS = {
@@ -138,9 +138,7 @@ function MovieCard({ movie, onClick, size }) {
           transition:"opacity 0.25s " + EASE + ", transform 0.25s " + EASE,
           pointerEvents:"none",
         }}>
-          <div style={{width:"46px",height:"46px",borderRadius:"50%",background:"rgba(34,197,94,0.92)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 20px rgba(34,197,94,0.5)"}}>
-            <span style={{color:"#fff",fontSize:"14px",marginLeft:"2px"}}>▶</span>
-          </div>
+          <PlayButton />
         </div>
         <div style={{position:"absolute",top:"8px",left:"8px",background:"rgba(0,0,0,0.65)",backdropFilter:"blur(6px)",borderRadius:"5px",padding:"3px 7px",fontSize:"11px",fontWeight:600,color:"rgba(255,255,255,0.9)"}}>
           {movie.rating ? ("⭐ " + movie.rating) : "—"}
@@ -151,6 +149,49 @@ function MovieCard({ movie, onClick, size }) {
         </div>
       </div>
     </div>
+  );
+}
+
+// ─── PLAY BUTTON (shared, premium, used on cards + hero) ───────────────────
+function PlayTriangle({ size }) {
+  const s = size || 14;
+  return (
+    <svg width={s} height={s} viewBox="0 0 24 24" style={{filter:"drop-shadow(0 1px 3px rgba(0,0,0,0.4))",marginLeft:"1px"}}>
+      <path d="M6 4.5v15l13-7.5z" fill="#fff" />
+    </svg>
+  );
+}
+
+function PlayButton({ size, big, disabled, onClick }) {
+  const dim = big ? 84 : 46;
+  const [hover, setHover] = useState(false);
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      onMouseEnter={function(){ setHover(true); }}
+      onMouseLeave={function(){ setHover(false); }}
+      style={{
+        width: dim + "px", height: dim + "px", borderRadius:"50%",
+        position: big ? "relative" : "relative",
+        background: disabled
+          ? "rgba(255,255,255,0.08)"
+          : "linear-gradient(155deg, #34d058 0%, #1ea34a 55%, #16843c 100%)",
+        border: disabled ? "2px solid rgba(255,255,255,0.15)" : "1px solid rgba(255,255,255,0.25)",
+        display:"flex",alignItems:"center",justifyContent:"center",
+        cursor: disabled ? "not-allowed" : "pointer",
+        boxShadow: disabled
+          ? "none"
+          : (big
+              ? (hover ? "0 0 0 14px rgba(255,255,255,0.06), 0 16px 44px rgba(22,132,60,0.55), inset 0 1px 1px rgba(255,255,255,0.35)" : "0 0 0 10px rgba(255,255,255,0.04), 0 10px 32px rgba(22,132,60,0.45), inset 0 1px 1px rgba(255,255,255,0.3)")
+              : (hover ? "0 6px 20px rgba(22,132,60,0.5), inset 0 1px 1px rgba(255,255,255,0.3)" : "0 4px 14px rgba(22,132,60,0.4), inset 0 1px 1px rgba(255,255,255,0.25)")
+            ),
+        transform: (!disabled && hover) ? "scale(1.07)" : "scale(1)",
+        transition:"transform 0.25s " + EASE + ", box-shadow 0.25s " + EASE,
+      }}
+    >
+      <PlayTriangle size={big ? 24 : 14} />
+    </button>
   );
 }
 
@@ -166,22 +207,47 @@ function MovieCardSkeleton({ size }) {
 }
 
 // ─── SCORE BADGE ─────────────────────────────────────────────────────────────
-function ScoreBadge({ label, value, sub, color, icon, primary }) {
+function ScoreRing({ pct, color, size }) {
+  const s = size || 56;
+  const stroke = 4;
+  const r = (s - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const offset = circ - (pct / 100) * circ;
+  return (
+    <svg width={s} height={s} style={{transform:"rotate(-90deg)",flexShrink:0}}>
+      <circle cx={s/2} cy={s/2} r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={stroke} />
+      <circle
+        cx={s/2} cy={s/2} r={r} fill="none" stroke={color} strokeWidth={stroke}
+        strokeDasharray={circ} strokeDashoffset={offset} strokeLinecap="round"
+        style={{transition:"stroke-dashoffset 0.8s " + EASE}}
+      />
+    </svg>
+  );
+}
+
+function ScoreBadge({ label, value, sub, color, primary, ring, ringPct }) {
   return (
     <div style={{
-      display:"flex",flexDirection:"column",alignItems:"center",gap:"6px",
-      padding: primary ? "16px 22px" : "14px 18px",
-      borderRadius:"12px",
-      background: primary ? "linear-gradient(160deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02))" : "rgba(255,255,255,0.025)",
-      border: primary ? ("1px solid " + color + "35") : "1px solid rgba(255,255,255,0.06)",
-      boxShadow: primary ? ("0 0 28px " + color + "12, inset 0 1px 0 rgba(255,255,255,0.04)") : "none",
-      minWidth: primary ? "130px" : "110px",
+      display:"flex",flexDirection:"column",alignItems:"center",gap:"8px",
+      padding: primary ? "18px 24px" : "16px 20px",
+      borderRadius:"14px",
+      background: primary
+        ? "linear-gradient(160deg, " + color + "14, rgba(255,255,255,0.02) 60%)"
+        : "linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01))",
+      border: primary ? ("1px solid " + color + "30") : "1px solid rgba(255,255,255,0.07)",
+      boxShadow: primary ? ("0 8px 28px " + color + "10, inset 0 1px 0 rgba(255,255,255,0.05)") : "0 4px 16px rgba(0,0,0,0.2)",
+      minWidth: primary ? "138px" : "118px",
     }}>
-      <div style={{fontSize: primary ? "26px" : "20px",fontWeight:800,color:color,display:"flex",alignItems:"center",gap:"5px"}}>
-        <span style={{fontSize: primary ? "17px" : "14px"}}>{icon}</span>{value}
-      </div>
-      <div style={{fontSize:"11px",fontWeight:600,color:"rgba(255,255,255,0.5)",textAlign:"center"}}>{label}</div>
-      {sub && <div style={{fontSize:"9px",color:"rgba(255,255,255,0.25)",textAlign:"center"}}>{sub}</div>}
+      {ring ? (
+        <div style={{position:"relative",width:"56px",height:"56px",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <ScoreRing pct={ringPct} color={color} size={56} />
+          <div style={{position:"absolute",fontSize:"15px",fontWeight:800,color:color}}>{value}</div>
+        </div>
+      ) : (
+        <div style={{fontSize: primary ? "24px" : "19px",fontWeight:800,color:color,letterSpacing:"-0.01em"}}>{value}</div>
+      )}
+      <div style={{fontSize:"11px",fontWeight:600,color:"rgba(255,255,255,0.55)",textAlign:"center",letterSpacing:"0.01em"}}>{label}</div>
+      {sub && <div style={{fontSize:"9px",color:"rgba(255,255,255,0.28)",textAlign:"center"}}>{sub}</div>}
     </div>
   );
 }
@@ -468,8 +534,9 @@ function DetailPage({ movie, onBack, onSelect }) {
         <TrailerModal trailerKey={trailerKey} title={movie.title} onClose={function(){setTrailerOpen(false);}} />
       )}
 
-      <div style={{position:"relative",height:"560px",overflow:"hidden",background:"#1a1a22"}}>
-        {movie.backdrop && (
+      <div style={{position:"relative"}}>
+        <div style={{position:"relative",height:"560px",overflow:"hidden",background:"#1a1a22"}}>
+          {movie.backdrop && (
           <img src={movie.backdrop} alt="" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}} />
         )}
         <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom, rgba(13,13,15,0.1) 0%, rgba(13,13,15,0.05) 25%, rgba(13,13,15,0.55) 65%, rgba(13,13,15,1) 100%)"}} />
@@ -486,30 +553,11 @@ function DetailPage({ movie, onBack, onSelect }) {
           </button>
         </div>
 
-        <button
-          onClick={function(){ if(trailerKey) setTrailerOpen(true); }}
-          disabled={!trailerKey}
-          style={{
-            position:"absolute",top:"42%",left:"50%",
-            transform:"translate(-50%,-50%)",
-            width:"84px",height:"84px",borderRadius:"50%",
-            background: trailerKey
-              ? "radial-gradient(circle at 35% 30%, #4ade80, #16a34a 70%)"
-              : "rgba(255,255,255,0.08)",
-            border: trailerKey ? "3px solid rgba(255,255,255,0.85)" : "2px solid rgba(255,255,255,0.15)",
-            display:"flex",alignItems:"center",justifyContent:"center",
-            cursor: trailerKey ? "pointer" : "not-allowed",
-            boxShadow: trailerKey ? "0 0 0 12px rgba(255,255,255,0.05), 0 12px 40px rgba(34,197,94,0.5)" : "none",
-            transition:"transform 0.25s " + EASE + ", box-shadow 0.25s " + EASE,
-            zIndex:4,
-          }}
-          onMouseEnter={function(e){ if(trailerKey){ e.currentTarget.style.transform="translate(-50%,-50%) scale(1.08)"; }}}
-          onMouseLeave={function(e){ if(trailerKey){ e.currentTarget.style.transform="translate(-50%,-50%) scale(1)"; }}}
-        >
-          <span style={{color:"#fff",fontSize:"26px",marginLeft:"4px",filter:"drop-shadow(0 2px 6px rgba(0,0,0,0.4))"}}>▶</span>
-        </button>
+        <div style={{position:"absolute",top:"42%",left:"50%",transform:"translate(-50%,-50%)",zIndex:4}}>
+          <PlayButton big disabled={!trailerKey} onClick={function(){ if(trailerKey) setTrailerOpen(true); }} />
+        </div>
         {!trailerKey && !loading && (
-          <div style={{position:"absolute",top:"calc(42% + 56px)",left:"50%",transform:"translateX(-50%)",fontSize:"11px",color:"rgba(255,255,255,0.35)",zIndex:4,whiteSpace:"nowrap"}}>
+          <div style={{position:"absolute",top:"calc(42% + 58px)",left:"50%",transform:"translateX(-50%)",fontSize:"11px",color:"rgba(255,255,255,0.35)",zIndex:4,whiteSpace:"nowrap"}}>
             No trailer available
           </div>
         )}
@@ -535,28 +583,31 @@ function DetailPage({ movie, onBack, onSelect }) {
           </div>
         </div>
 
-        <div style={{position:"absolute",bottom:"-30px",right:"48px",zIndex:5}}>
+        </div>
+
+        {/* poster sits outside the clipped backdrop so it can overlap the seam cleanly */}
+        <div style={{position:"absolute",bottom:"-44px",right:"48px",zIndex:5}}>
           {movie.poster && (
             <img
               src={movie.poster}
               alt={movie.title}
-              style={{width:"150px",height:"225px",borderRadius:"10px",objectFit:"cover",border:"1px solid rgba(255,255,255,0.15)",boxShadow:"0 20px 56px rgba(0,0,0,0.8)"}}
+              style={{width:"180px",height:"270px",borderRadius:"12px",objectFit:"cover",border:"1px solid rgba(255,255,255,0.18)",boxShadow:"0 24px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05)"}}
             />
           )}
         </div>
       </div>
 
       {/* MAIN CONTENT — continuous scroll, sidebar with stacked platform boxes */}
-      <div style={{maxWidth:"1100px",margin:"0 auto",padding:"40px 32px 64px",display:"grid",gridTemplateColumns:"minmax(0,1fr) 260px",gap:"48px",alignItems:"start"}}>
+      <div style={{maxWidth:"1100px",margin:"0 auto",padding:"56px 32px 64px",display:"grid",gridTemplateColumns:"minmax(0,1fr) 260px",gap:"48px",alignItems:"start"}}>
 
         <div style={{minWidth:0,overflow:"hidden"}}>
           {/* SCORE BADGES */}
           {scores && (
             <div style={{display:"flex",gap:"12px",marginBottom:"32px",flexWrap:"wrap"}}>
-              <ScoreBadge label="Audience Score" value={scores.pct + "%"} sub={scores.confidence + " sample size"} color="#22c55e" icon="👍" primary />
-              <ScoreBadge label="TMDB Rating" value={scores.tenScale + "/10"} sub="community average" color="#f5c518" icon="⭐" />
-              {budget && <ScoreBadge label="Budget" value={budget} sub="production cost" color="#60a5fa" icon="💰" />}
-              {revenue && <ScoreBadge label="Box Office" value={revenue} sub="worldwide gross" color="#a78bfa" icon="🎟️" />}
+              <ScoreBadge label="Audience Score" value={scores.pct + "%"} sub={scores.confidence + " sample size"} color="#22c55e" primary ring ringPct={scores.pct} />
+              <ScoreBadge label="TMDB Rating" value={scores.tenScale} sub="out of 10 · community average" color="#f5c518" ring ringPct={scores.tenScale * 10} />
+              {budget && <ScoreBadge label="Budget" value={budget} sub="production cost" color="#60a5fa" />}
+              {revenue && <ScoreBadge label="Box Office" value={revenue} sub="worldwide gross" color="#a78bfa" />}
             </div>
           )}
 
